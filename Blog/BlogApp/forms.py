@@ -11,7 +11,9 @@ from models import Post, Reply
 #end alem
 
 #hossam
-from django.contrib.auth.models import User 
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 #end hossam
 
 
@@ -70,13 +72,23 @@ class Comment_Form(forms.ModelForm):
 
 #hossam
 
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'is_staff', 'is_active', 'is_superuser')
 
-class UserForm(forms.ModelForm):
+
+class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'is_superuser')
 
 
+class ChangePwForm(UserCreationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly'}), help_text="This is a disabled field.")
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
 
 
 #end hossam
