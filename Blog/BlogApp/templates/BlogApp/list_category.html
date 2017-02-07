@@ -1,0 +1,21 @@
+<table border = "1">
+
+<th>name</th><th colspan='4'>actions</th>
+
+{%   for category in all_category %}
+<tr>
+
+<td> {{ category.categoryName }} </td>
+<td> <a href="/blog/{{category.id}}/edit"> edit </a>  </td>
+<td> <a href="/blog/{{category.id}}/delete"> delete </a>  </td>
+
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+
+
+<a href="/blog/new"> new category</a>

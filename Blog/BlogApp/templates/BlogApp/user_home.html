@@ -1,0 +1,17 @@
+{% load app_filters %}
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        {% for category in categories %}
+            <a {% if subscribed|lookup:category.id == True %} href="{{category.id}}" {% else %} href="#" {% endif %}> {{category.categoryName}} </a>
+            {% if subscribed|lookup:category.id == True %}
+                <a href="{{category.id}}/unsubscribe" style="margin-left: 30px;">Unsubscribe</a>
+            {% else %}
+                <a style="margin-left: 30px;" href="{{category.id}}/subscribe">Subscribe</a>
+            {% endif %}
+            <hr /><hr />
+        {% endfor %}
+    <body>
+<html>

@@ -1,0 +1,34 @@
+<table border = "1">
+
+<th>post title</th>
+<th>post Pic url</th>
+<th>post content</th>
+<th>user id</th>
+<th>post date</th>
+<th>post category</th>
+<th colspan='4'>actions</th>
+
+
+
+{%   for post in all_post %}
+<tr>
+
+<td> {{ post.postTitle }} </td>
+<td> {{ post.postPic }} </td>
+<td> {{ post.postContent }} </td>
+<td> {{ post.userID }} </td>
+<td> {{ post.postDate }} </td>
+<td> {{ post.postCategory }} </td>
+
+<td> <a href="/blog/{{post.id}}/edit_post"> edit </a>  </td>
+<td> <a href="/blog/{{post.id}}/delete_post"> delete </a>  </td>
+
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+
+<a href="/blog/new_post"> new post </a> 

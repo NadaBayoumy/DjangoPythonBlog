@@ -1,0 +1,19 @@
+<table border = "1">
+
+<th>name</th><th colspan='4'>actions</th>
+
+{%   for word in all_forbidden_words %}
+<tr>
+
+<td> {{ word.forbiddenWord }} </td>
+<td> <a href="/blog/{{word.id}}/delete_forbidden_word"> delete </a>  </td>
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+
+
+<a href="/blog/new_forbidden_word"> new forbidden word</a>

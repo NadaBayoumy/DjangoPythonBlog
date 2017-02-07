@@ -1,0 +1,68 @@
+{% load app_filters %}
+
+<html>
+    <head>
+        <style>
+            .comment p {
+                font-size: 14px;
+            }
+
+            .reply h5 {
+                margin-left: 30px;
+            }
+
+            .reply p {
+                margin-left: 40px;
+                font-size: 10px;
+            }
+
+            .comment-section {
+                margin-left: 10px
+            }
+        </style>
+    </head>
+    <body>
+        <h1>{{post.postTitle}}</h1>
+        <h3>{{post.userID.first_name}} {{post.userID.last_name}}</h3>
+        <h5>{{post.postDate}}</h5>
+        <p>
+            {{post.postContent}}
+        </p>
+        <br />
+        <form method="POST" action="comment">{% csrf_token %}
+            {{comment_form.as_p}}
+            <input type="submit" value="reply" />
+        </form>
+        <div class="comment-section">
+            {% for comment in comments.0 %}
+                <div class = "comment">
+                    <h3>
+                        {{comment.userID.first_name}} {{comment.userID.last_name}} : {{comment.replyDate}}
+                    </h3>
+                    <p>
+                        {{comment.replyContent}}
+                    </p>
+                    <form method="POST" action="{{comment.id}}/reply">{% csrf_token %}
+                        {{comment_form.as_p}}
+                        <input type="submit" value="reply" />
+                    </form>
+
+                    <div class = "reply">
+                        {% for reply in comments|lookup:comment.id %}
+                            <h5>
+                                {{reply.userID.first_name}} {{reply.userID.last_name}} : {{reply.replyDate}}
+                            </h5>
+                            <p>
+                                {{reply.replyContent}}
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+
+
+
+    </body>
+</html>

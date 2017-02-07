@@ -1,0 +1,11 @@
+<h1>Admin Login Page</h1>
+<form method="post"> {% csrf_token %}
+    <label for="username">User Name: </label>
+    <input type="text" id="username" name="admin_name">
+    <label for="password">Password: </label>
+    <input type="password" name="admin_pw" id="password">
+    <button type='submit'>Login</button>
+    {% if not is_super %}
+    <p>You are not authorized to log in here. Admin required.​</p>
+    {% endif %}
+</form>

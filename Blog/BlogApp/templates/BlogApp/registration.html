@@ -1,0 +1,7 @@
+<form method = 'POST'> {% csrf_token %}
+{{ registration_form.as_p }}
+<!--<label for="repass">Password Confirmation: </label>
+<input id="repass" type="password">-->
+
+<button type="submit">Save</button>
+</form>

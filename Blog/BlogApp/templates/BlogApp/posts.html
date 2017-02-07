@@ -1,0 +1,19 @@
+{% load app_filters %}
+<html>
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+        {% for post in posts %}
+            <a href="{{post.id}}">{{post.postTitle}}</a>
+                {% if post|equal:user_id == True %}
+                    <button onclick="location.href='{{post.id}}/modify_post'">modify</button>
+                    <button onclick="location.href='{{post.id}}/delete_post'">delete</button>
+                {% endif %}
+            <hr />
+        {% endfor %}
+        <button onclick="location.href='new_post'">add new</button>
+    </body>
+</html>

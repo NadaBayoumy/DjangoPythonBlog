@@ -1,0 +1,453 @@
+#nada
+from django.shortcuts import render
+from django.template.context_processors import request
+from .models import ForbiddenWords
+from .forms import CategoryForm
+from .forms import ForbiddenWordsForm
+from .forms import PostForm
+import re
+#end nada
+
+#alem
+from .models import Category, Post, Reply
+from forms import Post_Form, Comment_Form
+#end alem
+
+#hossam
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from .forms import UserForm
+#end hossam
+
+
+
+#simona
+from .forms import RegistrationForm
+#end simona
+
+
+
+# Create your views here.
+
+#category 
+def all_category(request):
+    all_category = Category.objects.all()
+    context = {'all_category' : all_category}
+    return render(request, 'BlogApp/list_category.html', context)
+
+
+
+
+def new_category(request):
+    form = CategoryForm()
+    if request.method == 'POST':
+        form = CategoryForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/blog/category/')
+    context = {'category_form' : form }
+    return render(request, 'BlogApp/category_form.html', context)
+
+
+
+def edit_category(request, c_id):
+    c = Category.objects.get(id= c_id)
+    form = CategoryForm(instance= c)
+    if request.method == 'POST':
+        print("form method is post")
+        form = CategoryForm(request.POST , instance= c)
+        if form.is_valid():
+            print("form method is valid")
+            form.save()
+            return HttpResponseRedirect('/blog/category/')
+    context = {'category_form' : form}
+    return render(request, 'BlogApp/category_form.html', context)
+
+
+
+def delete_category(request, c_id):
+    category = Category.objects.get(id= c_id)
+    category.delete()
+    return HttpResponseRedirect('/blog/category/')
+#end category
+
+
+
+
+#forbidden words
+def all_forbidden_words(request):
+    all_forbidden_words = ForbiddenWords.objects.all()
+    context = {'all_forbidden_words' : all_forbidden_words}
+    return render(request, 'BlogApp/list_forbidden_words.html', context)
+
+
+
+
+def delete_forbidden_word(request, w_id):
+    word = ForbiddenWords.objects.get(id= w_id)
+    word.delete()
+    return HttpResponseRedirect('/blog/forbidden_words/')
+
+
+
+def new_forbidden_word(request):
+    form = ForbiddenWordsForm()
+    if request.method == 'POST':
+        form = ForbiddenWordsForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/blog/forbidden_words/')
+    context = {'forbidden_words_form' : form }
+    return render(request, 'BlogApp/forbidden_words_form.html', context)
+
+
+#TO DO : take comment text to be replaced with the original comment on post
+def check_forbidden_words_in_comment(request, comment_txt):
+    coment_txt_arr = comment_txt.split(",")
+    all_forbidden_words = ForbiddenWords.objects.all()
+    for word in all_forbidden_words:
+        replaced=""
+        if comment_txt.find(word.forbiddenWord):
+            for c in word.forbiddenWord:
+                replaced+="*"
+            comment_txt= comment_txt.replace(word.forbiddenWord,replaced)
+           
+    return HttpResponseRedirect('/blog/forbidden_words/')
+     
+#end forbidden words
+
+
+
+
+#posts 
+
+def all_post(request):
+    all_post = Post.objects.all()
+    context = {'all_post' : all_post}
+    return render(request, 'BlogApp/list_post.html', context)
+
+def new_post(request):
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/blog/post/')
+    context = {'post_form' : form }
+    return render(request, 'BlogApp/post_form.html', context)
+
+def edit_post(request, p_id):
+    p = Post.objects.get(id= p_id)
+    form = PostForm(instance= p)
+    if request.method == 'POST':
+        form = PostForm(request.POST , instance= p)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/blog/post/')
+    context = {'post_form' : form}
+    return render(request, 'BlogApp/post_form.html', context)
+
+def delete_post(request, p_id):
+    post = Post.objects.get(id= p_id)
+    post.delete()
+    return HttpResponseRedirect('/blog/post/')
+
+#end posts
+
+
+
+
+
+
+
+#alem views
+
+# Create your views here.
+
+"""
+    This function handles the view of subscribed categories and unsubscribed categories
+    pattern is home/user_id
+
+"""
+
+def show_categories(request, u_id):
+    #subquery that returns category objects that relates to a certain user who's id is attained from site parameters
+    categories = Category.objects.all()
+    categories_for_user = Category.objects.filter(id__in = Category.users.through.objects.filter(user_id = u_id).values_list('category_id'))
+    subscribed = {}
+    for category in categories_for_user:
+        subscribed[category.id] = True
+
+    context = {
+        "categories": categories,
+        "subscribed": subscribed
+        }
+    return render(request, "BlogApp/user_home.html", context)
+
+"""
+    This function handles the task of displaying all posts in a certain category
+    pattern is home/user_id(not used in query)/category_id
+
+"""
+
+def show_posts(request, c_id, u_id):
+    # returns all related posted to a certain category ordered by its date
+    posts = Post.objects.filter(postCategory_id = c_id).order_by('postDate')
+    context = {"posts" : posts, 'user_id' : str(u_id), 'category_id' : c_id}
+    return render(request, "BlogApp/posts.html", context)
+
+"""
+    This function handles the task of displaying a certain post and all its comments including replies
+    pattern is home/user_id(not used)/category_id(not used)/post_id
+
+"""
+
+def post_display(request, u_id, c_id, p_id):
+    post = Post.objects.get(pk = p_id) # returns an object contains all post info
+    comments = Reply.objects.filter(postID_id = p_id) # returns an queryset contains all the comments/replies to this post
+
+    # comment_dict key is the original comment id
+    # where its value is a list that holds instances of replies to this particlar comment
+    # Original comment will have key 0
+
+    comments_dict = {}
+    comments_dict[0] = []
+    for comment in comments:
+        print "Checking", comment.comment_id
+        if comment.comment_id is None:
+            print "None"
+            comments_dict[0].append(comment) # pushing an original comment to the end of the list with key 0
+            comments_dict[comment.id] = []
+        else:
+            print comment, "Will be added"
+            comments_dict[comment.comment_id].append(comment) # pushing a reply to the end of the list with its parent comment id as key
+    comment_form = Comment_Form()
+    if request.method == "POST":
+        comment_form = Comment_Form(request.POST)
+        if comment_form.is_valid():
+            comment_form = comment_form.save(commit = False)
+            comment_form.userID = User.objects.get(pk = u_id)
+            comment_form.postID = Post.objects.get(pk = p_id)
+            comment_form.save()
+            return HttpResponseRedirect("/home/" + u_id + "/" + c_id + "/" + p_id)
+
+    context = {
+        'post' : post,
+        'comments': comments_dict,
+        'comment_form' : comment_form
+        }
+    return render(request, "BlogApp/post.html", context)
+
+def add_comment(request, u_id, c_id, p_id):
+    if request.method == "POST":
+        comment_form = Comment_Form(request.POST)
+        if comment_form.is_valid():
+            comment_form = comment_form.save(commit = False)
+            comment_form.userID = User.objects.get(pk = u_id)
+            comment_form.postID = Post.objects.get(pk = p_id)
+            comment_form.save()
+            return HttpResponseRedirect("/home/" + u_id + "/" + c_id + "/" + p_id)
+
+def add_reply(request, u_id, ca_id, p_id, co_id):
+    if request.method == "POST":
+        comment_form = Comment_Form(request.POST)
+        if comment_form.is_valid():
+            comment_form = comment_form.save(commit = False)
+            comment_form.userID = User.objects.get(pk = u_id)
+            comment_form.postID = Post.objects.get(pk = p_id)
+            comment_form.comment = Reply.objects.get(pk = co_id)
+            comment_form.save()
+            return HttpResponseRedirect("/home/" + u_id + "/" + ca_id + "/" + p_id)
+
+
+def subscribe_category(request, u_id, c_id):
+    category = Category.objects.get(pk = c_id)
+    user = User.objects.get(pk = u_id)
+    category.users.add(user)
+    return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+
+def unsubscribe_category(request, u_id, c_id):
+    category = Category.objects.get(pk = c_id)
+    user = User.objects.get(pk = u_id)
+    category.users.remove(user)
+    return HttpResponseRedirect("/home/" + u_id + "/")
+
+def add_new_post(request, u_id, c_id):
+    form = Post_Form()
+    if request.method == "POST":
+        form = Post_Form(request.POST, request.FILES)
+        if form.is_valid():
+            form = form.save(commit = False)
+            form.userID = User.objects.get(pk = u_id)
+            form.postCategory = Category.objects.get(pk = c_id)
+            form.save()
+            return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+    context = {'form' : form}
+    return render(request, "BlogApp/new_post.html", context)
+
+def modify_post(request, u_id, c_id, p_id):
+    post = Post.objects.get(pk = p_id)
+    form = Post_Form(instance = post)
+    if request.method == 'POST':
+        form = Post_Form(request.POST, instance = post)
+        if form.is_valid():
+            form = form.save(commit = False)
+            form.userID = User.objects.get(pk = u_id)
+            form.postCategory = Category.objects.get(pk = c_id)
+            form.save()
+            return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+    context = {'form' : form}
+    return render(request, "BlogApp/new_post.html", context)
+
+def delete_post(request, u_id, c_id, p_id):
+    post = Post.objects.get(pk = p_id)
+    post.delete()
+    return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+
+
+#alem views
+
+
+
+
+
+
+
+
+
+
+#hossam
+
+
+
+def edit_user(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    form = UserForm(instance=user)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/BlogApp/users/')
+
+    return render(request, 'BlogApp/edit_user.html', {'form': form, 'user': user})
+
+
+def create_user(request):
+    form = UserForm()
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/BlogApp/users/')
+
+    return render(request, 'BlogApp/new_user.html', {'form': form})
+
+
+
+def delete_user(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    user.delete()
+    return HttpResponseRedirect('/BlogApp/users/')
+
+
+def login_user(request):
+    """ This view render the login page for normal users"""
+    active = True   # If user is inactive it will be reassigned to FALSE!
+    is_user = True  # Checks if the given username and password belongs to some user or not.
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/home/')
+        else:
+            try:
+                user = User.objects.get(username=username)
+                if check_password(password, user.password):
+                    active = user.is_active
+                else:
+                    is_user = False
+            except ObjectDoesNotExist:
+                is_user = False
+
+    return render(request, 'BlogApp/login_user.html', {'active': active, 'is_user': is_user})
+
+
+def login_admin(request):
+    is_super = True     # changes to FALSE if the user is not a superuser
+    if request.POST:
+        admin_name = request.POST['admin_name']
+        admin_pw = request.POST['admin_pw']
+
+        user = authenticate(username=admin_name, password=admin_pw)
+        if user is not None and user.is_superuser:
+            login(request, user)
+            return HttpResponseRedirect('/BlogApp/users/')
+        else:
+            is_super = False
+
+    return render(request, 'BlogApp/login_admin.html', {'is_super': is_super})
+
+
+def users_list(request):
+    """ Lists the users for admin for the CRUD operations. With 2 options,
+    block/unblock and promote/un-promote to/from admin"""
+    users = User.objects.all()
+    context = {'users': users}
+
+    return render(request, 'BlogApp/users_list.html', context)
+
+
+def block_user(request, user_id):
+    """ Block/unblock user """
+    user = User.objects.get(pk=user_id)
+    user.is_active = not user.is_active
+    user.save()
+
+    return HttpResponseRedirect('/BlogApp/users')
+
+
+def promote_user(request, user_id):
+    """ Promote/un-promote user to/from admin"""
+    user = User.objects.get(pk=user_id)
+    user.is_superuser = not user.is_superuser
+    user.save()
+
+    return HttpResponseRedirect('/BlogApp/users')
+
+#endhossam
+
+
+
+
+
+#simona
+
+
+#function to go home to choose between(rigester as user or adimn or login)
+def Home_options(request):
+    helloText='welcome :)'
+    context = {'category_form' : helloText}
+    #return HttpResponseRedirect('BlogApp/home.htm')
+    return render(request,'BlogApp/home.html',context)
+
+def registration(request):
+    form = RegistrationForm()
+    if request.method=='POST':
+        form = RegistrationForm(request.POST)
+#         print(form.data)
+        if form.is_valid():
+            form.save()
+            #here we will add contanier
+            return render(request, 'BlogApp/contanier.html',{})
+    context = {'registration_form' : form }
+    return render(request, 'BlogApp/registration.html',context)
+
+
+#end simona
