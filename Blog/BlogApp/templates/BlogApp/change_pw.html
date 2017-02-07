@@ -1,0 +1,10 @@
+<form method="POST"> {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Save</button>
+
+</form>
+
+<button type="button" onClick="javascript:location.href='/users/';" />Cancel</button>
+{% if done %}
+<p>Password has been changed successful!</p>
+{% endif %}

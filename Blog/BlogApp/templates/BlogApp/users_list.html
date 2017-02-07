@@ -8,36 +8,30 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
-<table class="table-striped">
+<table>
     <th>Username</th><th>First Name</th><th>Block/Unblock</th><th>Promote/Un-Promote</th>
     {% for user in users %}
     <tr>
         <td>{{user.username}}</td>
         <td>{{user.first_name}}</td>
-        {% if user.is_superuser is False %}
+        {% if user.is_superuser is True %}
         <td>
-            <button type="button" onClick="javascript:location.href='/blogapp/promote/{{user.pk}}';" />Promote</button>
+            <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Un-Promote</button>
         </td>
-            {% if user.is_active is True %}
-            <td>
-                <button type="button" onClick="javascript:location.href='/blogapp/block/{{user.pk}}';" />Block</button>
-            </td>
-            {% else %}
-            <td>
-                <button type="button" onClick="javascript:location.href='/blogapp/block/{{user.pk}}';" />Unblock</button>
-            </td>
-            {% endif %}
+        <td>
+            <button disabled >Block</button>
+        </td>
         {% else %}
         <td>
-            <button type="button" onClick="javascript:location.href='/blogapp/promote/{{user.pk}}';" />Un-Promote</button>
+            <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Promote</button>
         </td>
             {% if user.is_active is True %}
             <td>
-                <button disabled type="button" onClick="javascript:location.href='/blogapp/block/{{user.pk}}';" />Block</button>
+                <button type="button" onClick="javascript:location.href='/block/{{user.pk}}';" />Block</button>
             </td>
             {% else %}
             <td>
-                <button disabled type="button" onClick="javascript:location.href='/blogapp/block/{{user.pk}}';" />Unblock</button>
+                <button type="button" onClick="javascript:location.href='/block/{{user.pk}}';" />Unblock</button>
             </td>
             {% endif %}
         {% endif %}
@@ -46,4 +40,4 @@
     </tr>
     {% endfor %}
 </table>
-<button type="button" onClick="javascript:location.href='/blogapp/logout/';" />logout</button>
+<button type="button" onClick="javascript:location.href='new/';" />Create New User</button>
