@@ -6,6 +6,7 @@ from .forms import CategoryForm
 from .forms import ForbiddenWordsForm
 from .forms import PostForm
 import re
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger #for pagination
 #end nada
 
 #alem
@@ -197,6 +198,20 @@ def show_categories(request, u_id):
 def show_posts(request, c_id, u_id):
     # returns all related posted to a certain category ordered by its date
     posts = Post.objects.filter(postCategory_id = c_id).order_by('postDate')
+    
+    #here pagination starts
+    paginator = Paginator(posts, 5)
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        posts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        posts = paginator.page(paginator.num_pages)    
+    #here pagination ends    
+    
     context = {"posts" : posts, 'user_id' : str(u_id), 'category_id' : c_id}
     return render(request, "BlogApp/posts.html", context)
 
