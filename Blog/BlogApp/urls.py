@@ -61,9 +61,10 @@ urlpatterns = [
     #hossam
     url(r'^login/$', views.login_user),
     url(r'^admins/$', views.login_admin),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/BlogApp/login/'}),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/login/'}),
     url(r'^users/$', views.users_list),
     url(r'^users/edit/(?P<user_id>[0-9]+)$', views.edit_user),
+    url(r'^users/edit/ch_pw/(?P<user_id>[0-9]+)$', views.change_pw),
     url(r'^users/new/$', views.create_user),
     url(r'^users/edit/del/(?P<user_id>[0-9]+)$', views.delete_user),
     url(r'^block/(?P<user_id>[0-9]+)$', views.block_user),
