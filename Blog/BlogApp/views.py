@@ -7,6 +7,7 @@ from .forms import ForbiddenWordsForm
 from .forms import PostForm
 import re
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger #for pagination
+from django.core import mail #for send email on subscription
 #end nada
 
 #alem
@@ -283,6 +284,27 @@ def subscribe_category(request, u_id, c_id):
     category = Category.objects.get(pk = c_id)
     user = User.objects.get(pk = u_id)
     category.users.add(user)
+    
+    #Nada > app password in gmail : "puljwkqotinjhluc"
+    #send congratulations subscribtion email
+    connection = mail.get_connection()
+    # Manually open the connection
+    connection.open()
+    # Construct an email message that uses the connection
+    msgbodytext = "Hello - " + user.username + "- you have subscribed successfully in - " + category.categoryName +" -  welcome" 
+    email = mail.EmailMessage(
+        'Django Blog Application Welcome',
+        msgbodytext,
+        'nada.bayoumy1990@gmail.com',
+        [user.email],
+        connection=connection,
+    )
+    email.send() # Send the email
+    connection.close()
+    #end send congratulations subscribtion email
+    
+    
+    
     return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
 
 def unsubscribe_category(request, u_id, c_id):
