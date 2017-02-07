@@ -20,7 +20,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import UserForm
+from .forms import EditUserForm, CreateUserForm ,ChangePwForm
 #end hossam
 
 
@@ -319,39 +319,10 @@ def delete_post(request, u_id, c_id, p_id):
 
 
 
-
+#################################################################
 #hossam
-
-
-
-def edit_user(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
-    form = UserForm(instance=user)
-    if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/BlogApp/users/')
-
-    return render(request, 'BlogApp/edit_user.html', {'form': form, 'user': user})
-
-
-def create_user(request):
-    form = UserForm()
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/BlogApp/users/')
-
-    return render(request, 'BlogApp/new_user.html', {'form': form})
-
-
-
-def delete_user(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
-    user.delete()
-    return HttpResponseRedirect('/BlogApp/users/')
+#################################################################
+# Create your views here.
 
 
 def login_user(request):
@@ -365,7 +336,8 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect('/home/')
+            return HttpResponseRedirect('/home/'+str(user.pk))
+            #return HttpResponseRedirect('/users/')
         else:
             try:
                 user = User.objects.get(username=username)
@@ -375,11 +347,11 @@ def login_user(request):
                     is_user = False
             except ObjectDoesNotExist:
                 is_user = False
-
     return render(request, 'BlogApp/login_user.html', {'active': active, 'is_user': is_user})
 
 
 def login_admin(request):
+    """ This view render the login page for admins """
     is_super = True     # changes to FALSE if the user is not a superuser
     if request.POST:
         admin_name = request.POST['admin_name']
@@ -388,41 +360,107 @@ def login_admin(request):
         user = authenticate(username=admin_name, password=admin_pw)
         if user is not None and user.is_superuser:
             login(request, user)
-            return HttpResponseRedirect('/BlogApp/users/')
+            return HttpResponseRedirect('/users/')
         else:
             is_super = False
-
     return render(request, 'BlogApp/login_admin.html', {'is_super': is_super})
 
 
 def users_list(request):
     """ Lists the users for admin for the CRUD operations. With 2 options,
     block/unblock and promote/un-promote to/from admin"""
-    users = User.objects.all()
-    context = {'users': users}
-
-    return render(request, 'BlogApp/users_list.html', context)
+    if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
+        users = User.objects.all()
+        context = {'users': users}
+        return render(request, 'BlogApp/users_list.html', context)
+    else:
+        return HttpResponseRedirect('/home/')
 
 
 def block_user(request, user_id):
     """ Block/unblock user """
-    user = User.objects.get(pk=user_id)
-    user.is_active = not user.is_active
-    user.save()
-
-    return HttpResponseRedirect('/BlogApp/users')
+    if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
+        user = User.objects.get(pk=user_id)
+        user.is_active = not user.is_active
+        user.save()
+        return HttpResponseRedirect('/users')
+    else:
+        return HttpResponseRedirect('/home/')
 
 
 def promote_user(request, user_id):
     """ Promote/un-promote user to/from admin"""
-    user = User.objects.get(pk=user_id)
-    user.is_superuser = not user.is_superuser
-    user.save()
+    if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
+        user = User.objects.get(pk=user_id)
+        user.is_superuser = not user.is_superuser
+        user.save()
+        return HttpResponseRedirect('/users')
+    else:
+        return HttpResponseRedirect('/home/')
 
-    return HttpResponseRedirect('/BlogApp/users')
 
+def change_pw(request, user_id):
+    """ Change password:
+        1- Admin can change password of any user, but NOT other admins.
+        2- User can change only his/her password. """
+    done = False    # Checks if password has changed to display a paragraph in the template says that pw has changed.
+    user = get_object_or_404(User, pk=user_id)
+    if request.user.is_superuser and user.is_superuser and request.user.pk != user_id:
+        return HttpResponse("You can't change other admin's password!")
+    elif request.user.is_superuser or request.user.pk == user_id:
+        form = ChangePwForm(instance=user)
+        if request.method == 'POST':
+            form = ChangePwForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                done = True
+                return render(request, 'BlogApp/change_pw.html', {'form': form, 'done': done})
+        return render(request, 'BlogApp/change_pw.html', {'form': form, 'done': done})
+    else:
+        return HttpResponseRedirect('/home/')
+
+""" Admin CRUD OPERATIONS """
+
+
+def edit_user(request, user_id):
+    if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
+        user = get_object_or_404(User, pk=user_id)
+        form = EditUserForm(instance=user)
+        if request.method == 'POST':
+            form = EditUserForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/users/')
+        return render(request, 'BlogApp/edit_user.html', {'form': form, 'user': user})
+    else:
+        return HttpResponseRedirect('/home/')
+
+
+def create_user(request):
+    if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
+        form = CreateUserForm()
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/users/')
+        return render(request, 'BlogApp/new_user.html', {'form': form})
+    else:
+        return HttpResponseRedirect('/home/')
+
+
+def delete_user(request, user_id):
+    if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
+        user = get_object_or_404(User, pk=user_id)
+        user.delete()
+        return HttpResponseRedirect('/users/')
+    else:
+        return HttpResponseRedirect('/home/')
+
+
+###################################################################################
 #endhossam
-
+###################################################################################
 
 
 
