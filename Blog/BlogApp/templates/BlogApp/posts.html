@@ -1,4 +1,6 @@
 {% load app_filters %}
+{% load staticfiles %}
+{% static "" as base_url %}
 <html>
     <head>
         <title>
@@ -7,6 +9,7 @@
     </head>
     <body>
         {% for post in posts %}
+            <a href="{{post.id}}"><img src="{{base_url}}{{post.postPic.url}}" width="20" height="20" /></a>
             <a href="{{post.id}}">{{post.postTitle}}</a>
                 {% if post|equal:user_id == True %}
                     <button onclick="location.href='{{post.id}}/modify_post'">modify</button>
