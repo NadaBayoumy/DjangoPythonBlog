@@ -1,3 +1,10 @@
+{% extends 'BlogApp/base.html' %}
+
+{% block 'title' %}
+Users Editing
+{% endblock 'title' %}
+
+{% block 'body' %}
 <form method="POST"> {% csrf_token %}
     {{form.as_p}}
     <button type="submit">Save</button>
@@ -6,3 +13,4 @@
 </form>
 
 <button type="button" onClick="javascript:location.href='/users/';" />Cancel</button>
+{% endblock 'body' %}
