@@ -1,13 +1,10 @@
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends 'BlogApp/base.html' %}
 
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+{% block 'title' %}
+Users Management Panel
+{% endblock 'title' %}
 
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
+{% block 'body' %}
 <table>
     <th>Username</th><th>First Name</th><th>Block/Unblock</th><th>Promote/Un-Promote</th>
     {% for user in users %}
@@ -40,4 +37,5 @@
     </tr>
     {% endfor %}
 </table>
-<button type="button" onClick="javascript:location.href='new/';" />Create New User</button>
+<button type="button" onClick="javascript:location.href='new/';" />Add User</button>
+{% endblock 'body' %}
