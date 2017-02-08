@@ -534,6 +534,8 @@ def registration(request):
             return render(request, 'BlogApp/contanier.html',{})
     context = {'registration_form' : form }
     return render(request, 'BlogApp/registration.html',context)
+def manage(request):
+    return render(request,'BlogApp/home.html',{})
 
 
 #end simona
