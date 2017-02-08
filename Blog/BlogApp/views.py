@@ -522,6 +522,14 @@ def registration(request):
 #         print(form.data)
         if form.is_valid():
             form.save()
+            name=form.data['username']
+            obj = User.objects.get( username= name)
+#             uid=obj.id
+#             user = User.objects.get(id=1)
+            group = Group.objects.get(id=1)
+            obj.groups.add(group)
+#             group = auth_user_groups.objects.create(user_id=uid, group_id=1)
+            group.save()
             #here we will add contanier
             return render(request, 'BlogApp/contanier.html',{})
     context = {'registration_form' : form }
