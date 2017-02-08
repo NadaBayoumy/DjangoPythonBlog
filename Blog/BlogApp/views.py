@@ -168,6 +168,8 @@ def delete_post(request, p_id):
 
 #alem views
 
+
+
 # Create your views here.
 
 """
@@ -176,19 +178,19 @@ def delete_post(request, p_id):
 
 """
 
-def show_categories(request, u_id):
+def show_categories(request):
     #subquery that returns category objects that relates to a certain user who's id is attained from site parameters
     categories = Category.objects.all()
-    categories_for_user = Category.objects.filter(id__in = Category.users.through.objects.filter(user_id = u_id).values_list('category_id'))
+    categories_for_user = Category.objects.filter(id__in = Category.users.through.objects.filter(user_id = request.user.id).values_list('category_id'))
     subscribed = {}
     for category in categories_for_user:
         subscribed[category.id] = True
-
     context = {
         "categories": categories,
-        "subscribed": subscribed
+        "subscribed": subscribed,
+        "user": request.user
         }
-    return render(request, "BlogApp/user_home.html", context)
+    return render(request, "Blog/user_home.html", context)
 
 """
     This function handles the task of displaying all posts in a certain category
@@ -196,10 +198,9 @@ def show_categories(request, u_id):
 
 """
 
-def show_posts(request, c_id, u_id):
+def show_posts(request, c_id):
     # returns all related posted to a certain category ordered by its date
     posts = Post.objects.filter(postCategory_id = c_id).order_by('postDate')
-    
     #here pagination starts
     paginator = Paginator(posts, 5)
     page = request.GET.get('page')
@@ -210,11 +211,11 @@ def show_posts(request, c_id, u_id):
         posts = paginator.page(1)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        posts = paginator.page(paginator.num_pages)    
-    #here pagination ends    
-    
-    context = {"posts" : posts, 'user_id' : str(u_id), 'category_id' : c_id}
-    return render(request, "BlogApp/posts.html", context)
+        posts = paginator.page(paginator.num_pages)
+    #here pagination ends
+    context = {"posts" : posts, 'user_id' : str(request.user.id), 'category_id' : c_id}
+
+    return render(request, "Blog/posts.html", context)
 
 """
     This function handles the task of displaying a certain post and all its comments including replies
@@ -222,7 +223,7 @@ def show_posts(request, c_id, u_id):
 
 """
 
-def post_display(request, u_id, c_id, p_id):
+def post_display(request, c_id, p_id):
     post = Post.objects.get(pk = p_id) # returns an object contains all post info
     comments = Reply.objects.filter(postID_id = p_id) # returns an queryset contains all the comments/replies to this post
 
@@ -242,7 +243,7 @@ def post_display(request, u_id, c_id, p_id):
             print comment, "Will be added"
             comments_dict[comment.comment_id].append(comment) # pushing a reply to the end of the list with its parent comment id as key
     comment_form = Comment_Form()
-    if request.method == "POST":
+    """if request.method == "POST":
         comment_form = Comment_Form(request.POST)
         if comment_form.is_valid():
             comment_form = comment_form.save(commit = False)
@@ -250,103 +251,105 @@ def post_display(request, u_id, c_id, p_id):
             comment_form.postID = Post.objects.get(pk = p_id)
             comment_form.save()
             return HttpResponseRedirect("/home/" + u_id + "/" + c_id + "/" + p_id)
-
+    """
     context = {
         'post' : post,
         'comments': comments_dict,
         'comment_form' : comment_form
         }
-    return render(request, "BlogApp/post.html", context)
+    return render(request, "Blog/post.html", context)
 
-def add_comment(request, u_id, c_id, p_id):
+def check_profanity(content):
+    filtered = ''
+    first_word = True
+    for word in content.split():
+        if not first_word:
+            filtered += ' '
+        first_word = False
+        if ForbiddenWords.objects.filter(forbiddenWord = word.lower()):
+            filtered += ('*' * len(word))
+        else:
+            filtered += word
+    return filtered
+
+def add_comment(request, c_id, p_id):
     if request.method == "POST":
         comment_form = Comment_Form(request.POST)
         if comment_form.is_valid():
             comment_form = comment_form.save(commit = False)
-            comment_form.userID = User.objects.get(pk = u_id)
+            #comment_form.userID = User.objects.get(pk = request.user.id)
+            comment_form.userID = request.user
             comment_form.postID = Post.objects.get(pk = p_id)
+            comment_form.replyContent = check_profanity(comment_form.replyContent)
             comment_form.save()
-            return HttpResponseRedirect("/home/" + u_id + "/" + c_id + "/" + p_id)
+            return HttpResponseRedirect("/home/" + c_id + "/" + p_id)
 
-def add_reply(request, u_id, ca_id, p_id, co_id):
+def add_reply(request, ca_id, p_id, co_id):
     if request.method == "POST":
         comment_form = Comment_Form(request.POST)
         if comment_form.is_valid():
             comment_form = comment_form.save(commit = False)
-            comment_form.userID = User.objects.get(pk = u_id)
+            #comment_form.userID = User.objects.get(pk = request.user.id)
+            comment_form.userID = request.user
             comment_form.postID = Post.objects.get(pk = p_id)
             comment_form.comment = Reply.objects.get(pk = co_id)
+            comment_form.replyContent = check_profanity(comment_form.replyContent)
             comment_form.save()
-            return HttpResponseRedirect("/home/" + u_id + "/" + ca_id + "/" + p_id)
+            return HttpResponseRedirect("/home/" + ca_id + "/" + p_id)
 
 
-def subscribe_category(request, u_id, c_id):
+def subscribe_category(request, c_id):
     category = Category.objects.get(pk = c_id)
-    user = User.objects.get(pk = u_id)
+    #user = User.objects.get(pk = request.user.id)
+    user = request.user
     category.users.add(user)
-    
-    #Nada > app password in gmail : "puljwkqotinjhluc"
-    #send congratulations subscribtion email
-    connection = mail.get_connection()
-    # Manually open the connection
-    connection.open()
-    # Construct an email message that uses the connection
-    msgbodytext = "Hello - " + user.username + "- you have subscribed successfully in - " + category.categoryName +" -  welcome" 
-    email = mail.EmailMessage(
-        'Django Blog Application Welcome',
-        msgbodytext,
-        'nada.bayoumy1990@gmail.com',
-        [user.email],
-        connection=connection,
-    )
-    email.send() # Send the email
-    connection.close()
-    #end send congratulations subscribtion email
-    
-    
-    
-    return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+    return HttpResponseRedirect("/home/" + c_id)
 
-def unsubscribe_category(request, u_id, c_id):
+def unsubscribe_category(request, c_id):
     category = Category.objects.get(pk = c_id)
-    user = User.objects.get(pk = u_id)
+    #user = User.objects.get(pk = request.user.id)
+    user = request.user
     category.users.remove(user)
-    return HttpResponseRedirect("/home/" + u_id + "/")
+    return HttpResponseRedirect("/home/")
 
-def add_new_post(request, u_id, c_id):
+def add_new_post(request, c_id):
     form = Post_Form()
     if request.method == "POST":
         form = Post_Form(request.POST, request.FILES)
         if form.is_valid():
             form = form.save(commit = False)
-            form.userID = User.objects.get(pk = u_id)
+            #form.userID = User.objects.get(pk = request.user.id)
+            form.userID = request.user
             form.postCategory = Category.objects.get(pk = c_id)
+            form.postContent = check_profanity(form.postContent)
             form.save()
-            return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+            return HttpResponseRedirect("/home/" + c_id)
     context = {'form' : form}
-    return render(request, "BlogApp/new_post.html", context)
+    return render(request, "Blog/new_post.html", context)
 
-def modify_post(request, u_id, c_id, p_id):
+def modify_post(request, c_id, p_id):
     post = Post.objects.get(pk = p_id)
     form = Post_Form(instance = post)
     if request.method == 'POST':
         form = Post_Form(request.POST, instance = post)
         if form.is_valid():
             form = form.save(commit = False)
-            form.userID = User.objects.get(pk = u_id)
+            #form.userID = User.objects.get(pk = request.user.id)
+            form.userID = request.user
             form.postCategory = Category.objects.get(pk = c_id)
+            form.postContent = check_profanity(form.postContent)
             form.save()
-            return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+            return HttpResponseRedirect("/home/" + c_id)
     context = {'form' : form}
-    return render(request, "BlogApp/new_post.html", context)
+    return render(request, "Blog/new_post.html", context)
 
-def delete_post(request, u_id, c_id, p_id):
+def delete_post(request, c_id, p_id):
     post = Post.objects.get(pk = p_id)
     post.delete()
-    return HttpResponseRedirect("/home/" + u_id + "/" + c_id)
+    return HttpResponseRedirect("/home/" + c_id)
 
 
-#alem views
+#alem views ends
 
 
 
