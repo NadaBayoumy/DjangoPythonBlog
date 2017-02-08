@@ -1,4 +1,10 @@
-<h1>Login Page</h1>
+{% extends 'BlogApp/base.html' %}
+
+{% block 'title' %}
+Login
+{% endblock 'title' %}
+
+{% block 'body' %}
 <form method="post"> {% csrf_token %}
     {% if not is_user %}
     <p>Invalid username or password!</p>
@@ -12,3 +18,4 @@
     <p>You have been blocked! Please contact the admin.</p>
     {% endif %}
 </form>
+{% endblock 'body' %}
