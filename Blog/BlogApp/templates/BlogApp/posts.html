@@ -7,37 +7,74 @@
 
         </title>
     </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{% static '/css/bootstrap-theme.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/css/posts-style.css' %}"
     <body>
-        {% for post in posts %}
-            <a href="{{post.id}}"><img src="{{base_url}}{{post.postPic.url}}" width="20" height="20" /></a>
-            <a href="{{post.id}}">{{post.postTitle}}</a>
-                {% if post|equal:user_id == True %}
-                    <button onclick="location.href='{{post.id}}/modify_post'">modify</button>
-                    <button onclick="location.href='{{post.id}}/delete_post'">delete</button>
-                {% endif %}
-            <hr />
-        {% endfor %}
-        
-        
-         <!-- pagination starts here  -->  
+        <table class="table table-hover">
+            <tr class="success">
+                <th>
+                    Post Picture
+                </th>
+                <th>
+                    Post Title
+                </th>
+                <th>
+                    Post Author
+                </th>
+                <th>
+                    Modify
+                </th>
+                <th>
+                    Delete
+                </th>
+            </tr>
+
+            {% for post in posts %}
+                <tr>
+                    <td>
+                        {% if post.postPic %}
+                            <a href="{{post.id}}"><img class="post-pic" src="{{base_url}}{{post.postPic.url}}" /></a>
+                        {% endif %}
+                    </td>
+                    <td><a href="{{post.id}}">{{post.postTitle}}</a></td>
+                    <td><p>{{post.userID.first_name}} {{post.userID.last_name}}</p></td>
+                    {% if post|equal:user_id == True %}
+                        <!--<td><a href='{{post.id}}/modify_post'><img src="{% static 'img/edit.png' %}" width="20" height="20" /></a></td>
+                        <td><a href='{{post.id}}/delete_post'><img src="{% static '/img/delete.png' %}" width="20" height="20" /></a></td>-->
+                        <td><a href="{{post.id}}/modify_post"><span class="glyphicon glyphicon-edit"></span></a></td>
+                        <td><a href="{{post.id}}/modify_post"><span class="glyphicon glyphicon-remove" style="color: red;"></span></a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+        <!-- pagination starts here  -->
         <div class="pagination">
             <span class="step-links">
                 {% if posts.has_previous %}
-                    <a href="?page={{ posts.previous_page_number }}">previous</a>
+                    <a class="btn btn-danger" href="?page={{ posts.previous_page_number }}">previous</a>
                 {% endif %}
-        
+
                 <span class="current">
                     Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
                 </span>
-        
+
                 {% if posts.has_next %}
-                    <a href="?page={{ posts.next_page_number }}">next</a>
+                    <a class="btn btn-success" href="?page={{ posts.next_page_number }}">next</a>
                 {% endif %}
             </span>
         </div>
         <!-- pagination ends here -->
-        
-        
-        <button onclick="location.href='new_post'">add new</button>
+        {% if user.is_authenticated %}
+            <div class="container">
+                <div class="row">
+                        <button class="btn btn-primary" onclick="location.href='new_post'">add new</button>
+                </div>
+            </div>
+        {% endif %}
+        <script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}">
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     </body>
 </html>

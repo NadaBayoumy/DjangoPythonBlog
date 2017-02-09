@@ -1,17 +1,24 @@
 {% load app_filters %}
+{% load staticfiles %}
+{% static "" as base_url %}
 <html>
     <head>
         <title></title>
     </head>
     <body>
         {% for category in categories %}
-            <a {% if subscribed|lookup:category.id == True %} href="{{category.id}}" {% else %} href="#" {% endif %}> {{category.categoryName}} </a>
-            {% if subscribed|lookup:category.id == True %}
+            <a {% if not user.is_authenticated or subscribed|lookup:category.id == True %} href="{{category.id}}" {% else %} href="#" {% endif %}> {{category.categoryName}} </a>
+            {% if user.is_authenticated and subscribed|lookup:category.id == True %}
                 <a href="{{category.id}}/unsubscribe" style="margin-left: 30px;">Unsubscribe</a>
-            {% else %}
-                <a style="margin-left: 30px;" href="{{category.id}}/subscribe">Subscribe</a>
+            {% elif user.is_authenticated %}
+                <a and style="margin-left: 30px;" href="{{category.id}}/subscribe">Subscribe</a>
             {% endif %}
             <hr /><hr />
+        {% endfor %}
+        {% for post in posts %}
+            <a href="{{post.postCategory.pk}}/{{post.id}}"><img class="post-pic" src="{{base_url}}{{post.postPic.url}}" width="20" height="20" /></a>
+            <a href="{{post.postCategory.pk}}/{{post.id}}">{{post.postTitle}}</a>
+            <p>{{post.userID.first_name}} {{post.userID.last_name}} </p>
         {% endfor %}
     <body>
 <html>
