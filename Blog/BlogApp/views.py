@@ -377,7 +377,9 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect('/home/'+str(user.pk))
+            #nada commented path below
+            return HttpResponseRedirect('/')
+            #return HttpResponseRedirect('/home/'+str(user.pk))
             #return HttpResponseRedirect('/users/')
         else:
             try:
