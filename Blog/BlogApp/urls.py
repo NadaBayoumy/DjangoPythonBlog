@@ -44,16 +44,16 @@ urlpatterns = [
     #nada
     
     #alalem
-    url(r'^(?P<u_id>[0-9]+)/$', views.show_categories),       # redirection to specific user home page
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/$', views.show_posts), # redirection to posts related to this category
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/$', views.post_display), # redirection to post contents
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/subscribe', views.subscribe_category), # redirection to subscribe category
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/unsubscribe', views.unsubscribe_category), # redirection to unsubscribe category
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/new_post', views.add_new_post),
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/modify_post', views.modify_post),
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/delete_post', views.delete_post),
-    url(r'^(?P<u_id>[0-9]+)/(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/comment$', views.add_comment),
-    url(r'^(?P<u_id>[0-9]+)/(?P<ca_id>[0-9]+)/(?P<p_id>[0-9]+)/(?P<co_id>[0-9]+)/reply$', views.add_reply),
+    url(r'^$', views.show_categories),       # redirection to specific user home page
+    url(r'^(?P<c_id>[0-9]+)/$', views.show_posts), # redirection to posts related to this category
+    url(r'^(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/$', views.post_display), # redirection to post contents
+    url(r'^(?P<c_id>[0-9]+)/subscribe', views.subscribe_category), # redirection to subscribe category
+    url(r'^(?P<c_id>[0-9]+)/unsubscribe', views.unsubscribe_category), # redirection to unsubscribe category
+    url(r'^(?P<c_id>[0-9]+)/new_post', views.add_new_post),
+    url(r'^(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/modify_post', views.modify_post),
+    url(r'^(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/delete_post', views.delete_post),
+    url(r'^(?P<c_id>[0-9]+)/(?P<p_id>[0-9]+)/comment$', views.add_comment),
+    url(r'^(?P<ca_id>[0-9]+)/(?P<p_id>[0-9]+)/(?P<co_id>[0-9]+)/reply$', views.add_reply),
     #alalem
     
     
@@ -78,8 +78,9 @@ urlpatterns = [
      #urls of crud operations on categories
     #urls of register
     url(r'^HomePage/$', views.Home_options ),
-    url(r'^BlogApp/registration$',views.registration),
-#   url(r'^BlogApp/registrationAdmin$', views.registration_admin),
+    url(r'^registration$',views.registration),
+    url(r'^manage$', views.manage),
+    #   url(r'^BlogApp/registrationAdmin$', views.registration_admin),
     
     #end simona
     

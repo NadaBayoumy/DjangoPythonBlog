@@ -12,7 +12,7 @@ from django.core import mail #for send email on subscription
 
 #alem
 from .models import Category, Post, Reply
-from forms import Post_Form, Comment_Form
+from .forms import Post_Form, Comment_Form
 #end alem
 
 #hossam
@@ -20,7 +20,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import EditUserForm, CreateUserForm ,ChangePwForm
 #end hossam
@@ -50,7 +50,7 @@ def new_category(request):
         form = CategoryForm(request.POST) 
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/blog/category/')
+            return HttpResponseRedirect('/category/')
     context = {'category_form' : form }
     return render(request, 'BlogApp/category_form.html', context)
 
@@ -65,7 +65,7 @@ def edit_category(request, c_id):
         if form.is_valid():
             print("form method is valid")
             form.save()
-            return HttpResponseRedirect('/blog/category/')
+            return HttpResponseRedirect('/category/')
     context = {'category_form' : form}
     return render(request, 'BlogApp/category_form.html', context)
 
@@ -74,7 +74,7 @@ def edit_category(request, c_id):
 def delete_category(request, c_id):
     category = Category.objects.get(id= c_id)
     category.delete()
-    return HttpResponseRedirect('/blog/category/')
+    return HttpResponseRedirect('/category/')
 #end category
 
 
@@ -92,7 +92,7 @@ def all_forbidden_words(request):
 def delete_forbidden_word(request, w_id):
     word = ForbiddenWords.objects.get(id= w_id)
     word.delete()
-    return HttpResponseRedirect('/blog/forbidden_words/')
+    return HttpResponseRedirect('/forbidden_words/')
 
 
 
@@ -102,7 +102,7 @@ def new_forbidden_word(request):
         form = ForbiddenWordsForm(request.POST) 
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/blog/forbidden_words/')
+            return HttpResponseRedirect('/forbidden_words/')
     context = {'forbidden_words_form' : form }
     return render(request, 'BlogApp/forbidden_words_form.html', context)
 
@@ -118,7 +118,7 @@ def check_forbidden_words_in_comment(request, comment_txt):
                 replaced+="*"
             comment_txt= comment_txt.replace(word.forbiddenWord,replaced)
            
-    return HttpResponseRedirect('/blog/forbidden_words/')
+    return HttpResponseRedirect('/forbidden_words/')
      
 #end forbidden words
 
@@ -138,7 +138,7 @@ def new_post(request):
         form = PostForm(request.POST) 
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/blog/post/')
+            return HttpResponseRedirect('/post/')
     context = {'post_form' : form }
     return render(request, 'BlogApp/post_form.html', context)
 
@@ -149,14 +149,14 @@ def edit_post(request, p_id):
         form = PostForm(request.POST , instance= p)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/blog/post/')
+            return HttpResponseRedirect('/post/')
     context = {'post_form' : form}
     return render(request, 'BlogApp/post_form.html', context)
 
 def delete_post(request, p_id):
     post = Post.objects.get(id= p_id)
     post.delete()
-    return HttpResponseRedirect('/blog/post/')
+    return HttpResponseRedirect('/post/')
 
 #end posts
 
@@ -190,7 +190,7 @@ def show_categories(request):
         "subscribed": subscribed,
         "user": request.user
         }
-    return render(request, "Blog/user_home.html", context)
+    return render(request, "BlogApp/user_home.html", context)
 
 """
     This function handles the task of displaying all posts in a certain category
@@ -215,7 +215,7 @@ def show_posts(request, c_id):
     #here pagination ends
     context = {"posts" : posts, 'user_id' : str(request.user.id), 'category_id' : c_id}
 
-    return render(request, "Blog/posts.html", context)
+    return render(request, "BlogApp/posts.html", context)
 
 """
     This function handles the task of displaying a certain post and all its comments including replies
@@ -234,13 +234,13 @@ def post_display(request, c_id, p_id):
     comments_dict = {}
     comments_dict[0] = []
     for comment in comments:
-        print "Checking", comment.comment_id
+        #print "Checking", comment.comment_id
         if comment.comment_id is None:
-            print "None"
+            #print "None"
             comments_dict[0].append(comment) # pushing an original comment to the end of the list with key 0
             comments_dict[comment.id] = []
         else:
-            print comment, "Will be added"
+            #print comment, "Will be added"
             comments_dict[comment.comment_id].append(comment) # pushing a reply to the end of the list with its parent comment id as key
     comment_form = Comment_Form()
     """if request.method == "POST":
@@ -257,7 +257,7 @@ def post_display(request, c_id, p_id):
         'comments': comments_dict,
         'comment_form' : comment_form
         }
-    return render(request, "Blog/post.html", context)
+    return render(request, "BlogApp/post.html", context)
 
 def check_profanity(content):
     filtered = ''
@@ -325,7 +325,7 @@ def add_new_post(request, c_id):
             form.save()
             return HttpResponseRedirect("/home/" + c_id)
     context = {'form' : form}
-    return render(request, "Blog/new_post.html", context)
+    return render(request, "BlogApp/new_post.html", context)
 
 def modify_post(request, c_id, p_id):
     post = Post.objects.get(pk = p_id)
@@ -341,7 +341,7 @@ def modify_post(request, c_id, p_id):
             form.save()
             return HttpResponseRedirect("/home/" + c_id)
     context = {'form' : form}
-    return render(request, "Blog/new_post.html", context)
+    return render(request, "BlogApp/new_post.html", context)
 
 def delete_post(request, c_id, p_id):
     post = Post.objects.get(pk = p_id)
@@ -534,8 +534,9 @@ def registration(request):
             return render(request, 'BlogApp/contanier.html',{})
     context = {'registration_form' : form }
     return render(request, 'BlogApp/registration.html',context)
+
 def manage(request):
-    return render(request,'BlogApp/home.html',{})
+    return render(request,'BlogApp/mange.html',{})
 
 
 #end simona
