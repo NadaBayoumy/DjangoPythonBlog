@@ -12,7 +12,7 @@ class Category (models.Model):
 
 class Post (models.Model):
     postTitle = models.CharField(max_length = 180)
-    postPic = models.ImageField(verbose_name = "Post Image", upload_to = "static/img")
+    postPic = models.ImageField(verbose_name = "Post Image")
     postContent = models.TextField()
     userID = models.ForeignKey(User , related_name = 'users')
     postDate = models.DateTimeField(auto_now_add = True)
