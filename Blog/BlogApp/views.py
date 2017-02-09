@@ -17,7 +17,7 @@ from .forms import Post_Form, Comment_Form
 
 #hossam
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User, Group
@@ -377,9 +377,7 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            #nada commented path below
             return HttpResponseRedirect('/')
-            #return HttpResponseRedirect('/home/'+str(user.pk))
             #return HttpResponseRedirect('/users/')
         else:
             try:
@@ -417,7 +415,7 @@ def users_list(request):
         context = {'users': users}
         return render(request, 'BlogApp/users_list.html', context)
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 
 def block_user(request, user_id):
@@ -534,12 +532,14 @@ def registration(request):
 #             group = auth_user_groups.objects.create(user_id=uid, group_id=1)
             group.save()
             #here we will add contanier
-            return render(request, 'BlogApp/contanier.html',{})
+            return HttpResponseRedirect("/login")
     context = {'registration_form' : form }
     return render(request, 'BlogApp/registration.html',context)
 
 def manage(request):
-    return render(request,'BlogApp/mange.html',{})
-
+    if request.user.is_superuser:
+        return render(request,'BlogApp/mange.html',{})
+    else:
+        return HttpResponseForbidden()
 
 #end simona
