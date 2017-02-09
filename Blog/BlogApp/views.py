@@ -188,7 +188,8 @@ def show_categories(request):
     context = {
         "categories": categories,
         "subscribed": subscribed,
-        "user": request.user
+        "user": request.user,
+        "posts": Post.objects.all()
         }
     return render(request, "BlogApp/user_home.html", context)
 
