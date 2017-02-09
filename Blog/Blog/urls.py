@@ -19,7 +19,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),                    # redirection to admin page
     url(r'^blog/', include('BlogApp.urls')),
-     url(r'^home/', include('BlogApp.urls')),            # redirection to the home page to handle user
-     
+    url(r'^home/', include('BlogApp.urls')),            # redirection to the home page to handle user
+    url(r'^', include('BlogApp.urls')),
      
 ]
