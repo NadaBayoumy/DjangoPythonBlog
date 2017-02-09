@@ -16,7 +16,7 @@
             <hr /><hr />
         {% endfor %}
         {% for post in posts %}
-            <a href="{{post.postCategory.pk}}/{{post.id}}"><img class="post-pic" src="{{base_url}}{{post.postPic.url}}" width="20" height="20" /></a>
+            <a href="{{post.postCategory.pk}}/{{post.id}}"><img class="post-pic" src="{{base_url}}img/{{post.postPic.name}}"  width="20" height="20" /></a>
             <a href="{{post.postCategory.pk}}/{{post.id}}">{{post.postTitle}}</a>
             <p>{{post.userID.first_name}} {{post.userID.last_name}} </p>
         {% endfor %}
