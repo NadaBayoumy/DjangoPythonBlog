@@ -35,7 +35,7 @@
                 <tr>
                     <td>
                         {% if post.postPic %}
-                            <a href="{{post.id}}"><img class="post-pic" src="{{base_url}}{{post.postPic.url}}" /></a>
+                            <a href="{{post.id}}"><img class="post-pic" src="{{base_url}}img/{{post.postPic.name}}" /></a>
                         {% endif %}
                     </td>
                     <td><a href="{{post.id}}">{{post.postTitle}}</a></td>
