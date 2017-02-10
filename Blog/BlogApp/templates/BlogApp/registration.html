@@ -9,11 +9,7 @@ Registration
     <form method="POST" class="form-horizontal"> {% csrf_token %}
     {{ registration_form|bootstrap_horizontal }}
         <div class="form-group">
-        
-        
-        
-        
-            <button type="submit">Save</button>
+                                   <button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-floppy-save"></span> Submit</button>
         </div>
     </form>
 </div>
