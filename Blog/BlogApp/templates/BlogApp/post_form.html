@@ -11,7 +11,7 @@ Post
     <form method="POST" class="form-horizontal"> {% csrf_token %}
     {{ post_form|bootstrap_horizontal }}
         <div class="form-group">  
-            <button type="submit">Save</button>
+                                   <button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> Add</button>
         </div>
     </form>
 </div>
