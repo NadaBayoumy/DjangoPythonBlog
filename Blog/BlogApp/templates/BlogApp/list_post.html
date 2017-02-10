@@ -1,4 +1,15 @@
-<table border = "1">
+{% extends 'BlogApp/base.html' %}
+
+{% block 'title' %}
+Users Management Panel
+{% endblock 'title' %}
+
+{% block 'body' %}
+
+
+<div class="container">
+<table class="table">
+
 
 <th>post title</th>
 <th>post Pic url</th>
@@ -20,8 +31,8 @@
 <td> {{ post.postDate }} </td>
 <td> {{ post.postCategory }} </td>
 
-<td> <a href="/{{post.id}}/edit_post"> edit </a>  </td>
-<td> <a href="/{{post.id}}/delete_post"> delete </a>  </td>
+<td> <a href="/{{post.id}}/edit_post" class="glyphicon glyphicon-edit"> </a>  </td>
+<td> <a href="/{{post.id}}/delete_post" class="glyphicon glyphicon-remove"> </a>  </td>
 
 </tr>
 
@@ -31,4 +42,7 @@
 </table>
 
 
-<a href="/new_post"> new post </a>
+<a href="/new_post" class="glyphicon glyphicon-plus"> new post </a> 
+
+
+{% endblock 'body' %}
