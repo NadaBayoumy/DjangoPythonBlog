@@ -5,15 +5,67 @@ Users Management Panel
 {% endblock 'title' %}
 
 {% block 'body' %}
+
+
+<!-- nada i need to put this link in header  -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function() {
+        $(".lockedrow").parents('tr').css( "border", "2px solid red" );
+        $(".lockedrow").parents('tr td a').css( "color", "red" );
+    });
+</script>
+<!-- end nada link -->
+
+<div class="container">
+
 <table class="table">
-    <th>Username</th><th>First Name</th><th>Block/Unblock</th><th>Promote/Un-Promote</th>
+    <th>Username</th><th>First Name</th><th>Promote/Un-Promote</th><th>Block/Unblock</th><th></th>
     {% for user in users %}
-    <tr>
+    
+     <tr>
+        <td>{{user.username}}</td>
+        <td>{{user.first_name}}</td>
+        {% if user.is_superuser is True %}
+        <td>
+            <!-- <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Un-Promote</button> -->
+            <a href="/promote/{{user.pk}}" class="fa fa-hand-paper-o" >  </a>
+        </td>
+        <td>
+            <!-- <button disabled >Block</button> -->
+            <a disabled  class="lockedrow fa fa-lock"> </a>
+        </td>
+        {% else %}
+        <td>
+            <!-- <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Promote</button> -->
+            <a href="/promote/{{user.pk}}" class="fa fa-handshake-o" >  </a>
+
+
+        </td>
+            {% if user.is_active is True %}
+            <td>
+                <!-- <button type="button" onClick="javascript:location.href='/block/{{user.pk}}';" />Block</button> -->
+                <a href="/block/{{user.pk}}" class="fa fa-lock" > </a>
+            </td>
+            {% else %}
+            <td>
+                <!-- <button type="button" onClick="javascript:location.href='/block/{{user.pk}}';" />Unblock</button> -->
+                <a href="/block/{{user.pk}}" class="fa fa-unlock"> </a>
+            </td>
+            {% endif %}
+        {% endif %}
+        <td><a href="edit/{{user.pk}}" class="glyphicon glyphicon-edit"></a></td>
+
+    </tr>
+    
+    
+    <!-- <tr>
         <td>{{user.username}}</td>
         <td>{{user.first_name}}</td>
         {% if user.is_superuser is True %}
         <td>
             <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Un-Promote</button>
+            <a href="/promote/{{user.pk}}" > Un-Promote </a>
         </td>
         <td>
             <button disabled >Block</button>
@@ -24,7 +76,7 @@ Users Management Panel
         </td>
             {% if user.is_active is True %}
             <td>
-                <button type="button" onClick="javascript:location.href='/block/{{user.pk}}';" />Block</button>
+                <button  type="button" onClick="javascript:location.href='/block/{{user.pk}}';"   />Block</button>
             </td>
             {% else %}
             <td>
@@ -32,10 +84,12 @@ Users Management Panel
             </td>
             {% endif %}
         {% endif %}
-        <td><a href="edit/{{user.pk}}">Edit</a></td>
+        <td><a class="glyphicon glyphicon-edit" href="edit/{{user.pk}}"></a></td>
 
-    </tr>
+    </tr> -->
     {% endfor %}
 </table>
-<button type="button" onClick="javascript:location.href='new/';" />Add User</button>
+<!-- <button type="button" onClick="javascript:location.href='new/';" class="glyphicon glyphicon-plus" />Add User</button> -->
+<a href="new/" class="glyphicon glyphicon-plus"> new user </a>
+</div>
 {% endblock 'body' %}
