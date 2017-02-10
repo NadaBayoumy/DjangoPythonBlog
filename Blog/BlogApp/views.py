@@ -251,7 +251,7 @@ def post_display(request, c_id, p_id):
             comment_form.userID = User.objects.get(pk = u_id)
             comment_form.postID = Post.objects.get(pk = p_id)
             comment_form.save()
-            return HttpResponseRedirect("/home/" + u_id + "/" + c_id + "/" + p_id)
+            return HttpResponseRedirect("/" + u_id + "/" + c_id + "/" + p_id)
     """
     context = {
         'post' : post,
@@ -283,7 +283,7 @@ def add_comment(request, c_id, p_id):
             comment_form.postID = Post.objects.get(pk = p_id)
             comment_form.replyContent = check_profanity(comment_form.replyContent)
             comment_form.save()
-            return HttpResponseRedirect("/home/" + c_id + "/" + p_id)
+            return HttpResponseRedirect("/" + c_id + "/" + p_id)
 
 def add_reply(request, ca_id, p_id, co_id):
     if request.method == "POST":
@@ -296,7 +296,7 @@ def add_reply(request, ca_id, p_id, co_id):
             comment_form.comment = Reply.objects.get(pk = co_id)
             comment_form.replyContent = check_profanity(comment_form.replyContent)
             comment_form.save()
-            return HttpResponseRedirect("/home/" + ca_id + "/" + p_id)
+            return HttpResponseRedirect("/" + ca_id + "/" + p_id)
 
 
 def subscribe_category(request, c_id):
@@ -304,14 +304,14 @@ def subscribe_category(request, c_id):
     #user = User.objects.get(pk = request.user.id)
     user = request.user
     category.users.add(user)
-    return HttpResponseRedirect("/home/" + c_id)
+    return HttpResponseRedirect("/" + c_id)
 
 def unsubscribe_category(request, c_id):
     category = Category.objects.get(pk = c_id)
     #user = User.objects.get(pk = request.user.id)
     user = request.user
     category.users.remove(user)
-    return HttpResponseRedirect("/home/")
+    return HttpResponseRedirect("/")
 
 def add_new_post(request, c_id):
     form = Post_Form()
@@ -324,7 +324,7 @@ def add_new_post(request, c_id):
             form.postCategory = Category.objects.get(pk = c_id)
             form.postContent = check_profanity(form.postContent)
             form.save()
-            return HttpResponseRedirect("/home/" + c_id)
+            return HttpResponseRedirect("/" + c_id)
     context = {'form' : form}
     return render(request, "BlogApp/new_post.html", context)
 
@@ -340,15 +340,14 @@ def modify_post(request, c_id, p_id):
             form.postCategory = Category.objects.get(pk = c_id)
             form.postContent = check_profanity(form.postContent)
             form.save()
-            return HttpResponseRedirect("/home/" + c_id)
+            return HttpResponseRedirect("/" + c_id)
     context = {'form' : form}
     return render(request, "BlogApp/new_post.html", context)
 
 def delete_post(request, c_id, p_id):
     post = Post.objects.get(pk = p_id)
     post.delete()
-    return HttpResponseRedirect("/home/" + c_id)
-
+    return HttpResponseRedirect("/" + c_id)
 
 #alem views ends
 
