@@ -368,44 +368,48 @@ def delete_post(request, c_id, p_id):
 
 def login_user(request):
     """ This view render the login page for normal users"""
-    active = True   # If user is inactive it will be reassigned to FALSE!
-    is_user = True  # Checks if the given username and password belongs to some user or not.
-    if request.POST:
-        username = request.POST['username']
-        password = request.POST['password']
+    if not request.user.is_authenticated:
+        active = True   # If user is inactive it will be reassigned to FALSE!
+        is_user = True  # Checks if the given username and password belongs to some user or not.
+        if request.POST:
+            username = request.POST['username']
+            password = request.POST['password']
 
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect('/')
-            #return HttpResponseRedirect('/users/')
-        else:
-            try:
-                user = User.objects.get(username=username)
-                if check_password(password, user.password):
-                    active = user.is_active
-                else:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect('/')
+            else:
+                try:
+                    user = User.objects.get(username=username)
+                    if check_password(password, user.password):
+                        active = user.is_active
+                    else:
+                        is_user = False
+                except ObjectDoesNotExist:
                     is_user = False
-            except ObjectDoesNotExist:
-                is_user = False
-    return render(request, 'BlogApp/login_user.html', {'active': active, 'is_user': is_user})
+        return render(request, 'BlogApp/login_user.html', {'active': active, 'is_user': is_user})
+    else:
+        return HttpResponseRedirect('/')
 
 
 def login_admin(request):
     """ This view render the login page for admins """
-    is_super = True     # changes to FALSE if the user is not a superuser
-    if request.POST:
-        admin_name = request.POST['admin_name']
-        admin_pw = request.POST['admin_pw']
+    if not request.user.is_authenticated:
+        is_super = True     # changes to FALSE if the user is not a superuser
+        if request.POST:
+            admin_name = request.POST['admin_name']
+            admin_pw = request.POST['admin_pw']
 
-        user = authenticate(username=admin_name, password=admin_pw)
-        if user is not None and user.is_superuser:
-            login(request, user)
-            return HttpResponseRedirect('/users/')
-        else:
-            is_super = False
-    return render(request, 'BlogApp/login_admin.html', {'is_super': is_super})
-
+            user = authenticate(username=admin_name, password=admin_pw)
+            if user is not None and user.is_superuser:
+                login(request, user)
+                return HttpResponseRedirect('/users/')
+            else:
+                is_super = False
+        return render(request, 'BlogApp/login_admin.html', {'is_super': is_super})
+    else:
+        return HttpResponseRedirect('/')
 
 def users_list(request):
     """ Lists the users for admin for the CRUD operations. With 2 options,

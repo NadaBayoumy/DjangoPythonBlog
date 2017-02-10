@@ -5,14 +5,62 @@ Login Admin
 {% endblock 'title' %}
 
 {% block 'body' %}
-<form method="post"> {% csrf_token %}
+<div class="header_jpg">
+
+    <div class="container">
+
+        <form method="post" class="form-horizontal"> {% csrf_token %}
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">Username: </label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="Username" type="text" id="username" name="admin_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">Password: </label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="Password" type="password" name="admin_pw" id="password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Remember me
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type='submit' class="btn btn-primary">Sign in</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="form-group has-error">
+                        {% if not is_super %}
+                        <span id="helpBlock" class="help-block">* You are not authorized to log in here. Admin required.​</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock 'body' %}
+<!--<form method="post"> {% csrf_token %}
     <label for="username">User Name: </label>
     <input type="text" id="username" name="admin_name">
     <label for="password">Password: </label>
     <input type="password" name="admin_pw" id="password">
     <button type='submit'>Login</button>
     {% if not is_super %}
-    <p>You are not authorized to log in here. Admin required.​</p>
+    <div class="form-group has-error">
+        <span id="helpBlock2" class="help-block">​</span>
+    </div>
     {% endif %}
-</form>
-{% endblock 'body' %}
+
+</form>-->
+

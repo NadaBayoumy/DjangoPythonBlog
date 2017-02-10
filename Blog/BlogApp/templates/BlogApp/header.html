@@ -1,5 +1,4 @@
 {% if not request.user.is_authenticated  %}
-{{request.user}}
 <button type="button" onClick="javascript:location.href='/login/';" />Log In</button>
 <button type="button" onClick="javascript:location.href='/registration';" />Register</button>
 {% elif not request.user.is_super %}
