@@ -1,4 +1,15 @@
-<table border = "1">
+{% extends 'BlogApp/base.html' %}
+
+{% block 'title' %}
+Users Management Panel
+{% endblock 'title' %}
+
+{% block 'body' %}
+
+
+<div class="container">
+<table class="table">
+
 
 <th>name</th><th colspan='4'>actions</th>
 
@@ -6,7 +17,7 @@
 <tr>
 
 <td> {{ word.forbiddenWord }} </td>
-<td> <a href="/{{word.id}}/delete_forbidden_word"> delete </a>  </td>
+<td> <a href="/{{word.id}}/delete_forbidden_word" class="glyphicon glyphicon-remove">  </a>  </td>
 </tr>
 
 {% endfor %}
@@ -16,4 +27,6 @@
 
 
 
-<a href="/new_forbidden_word"> new forbidden word</a>
+<a href="/new_forbidden_word" class="glyphicon glyphicon-plus"> new forbidden word</a>
+
+{% endblock 'body' %}

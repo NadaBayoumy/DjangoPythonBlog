@@ -1,4 +1,14 @@
-<table border = "1">
+{% extends 'BlogApp/base.html' %}
+
+{% block 'title' %}
+Users Management Panel
+{% endblock 'title' %}
+
+{% block 'body' %}
+
+
+<div class="container">
+<table class="table">
 
 <th>name</th><th colspan='4'>actions</th>
 
@@ -6,8 +16,8 @@
 <tr>
 
 <td> {{ category.categoryName }} </td>
-<td> <a href="/{{category.id}}/edit"> edit </a>  </td>
-<td> <a href="/{{category.id}}/delete"> delete </a>  </td>
+<td> <a href="/{{category.id}}/edit" class="glyphicon glyphicon-edit">  </a>  </td>
+<td> <a href="/{{category.id}}/delete" class="glyphicon glyphicon-remove">  </a>  </td>
 
 </tr>
 
@@ -18,4 +28,6 @@
 
 
 
-<a href="/new"> new category</a>
+<a href="/new" class="glyphicon glyphicon-plus"> new category</a>
+</div>
+{% endblock 'body' %}
