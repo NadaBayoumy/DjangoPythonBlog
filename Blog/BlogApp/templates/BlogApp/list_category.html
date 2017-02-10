@@ -8,13 +8,15 @@ Users Management Panel
 
 
 <div class="container">
+
+    <a href="/new" class="pull-right"><i class="glyphicon glyphicon-plus"></i></a>
 <table class="table">
 
-<th>name</th><th colspan='4'>actions</th>
+<th>#</th><th>Title</th><th>Edit</th><th>Delete</th>
 
 {%   for category in all_category %}
 <tr>
-
+<td>{{count.increment}}</td>
 <td> {{ category.categoryName }} </td>
 <td> <a href="/{{category.id}}/edit" class="glyphicon glyphicon-edit">  </a>  </td>
 <td> <a href="/{{category.id}}/delete" class="glyphicon glyphicon-remove">  </a>  </td>
@@ -26,8 +28,5 @@ Users Management Panel
 
 </table>
 
-
-
-<a href="/new" class="glyphicon glyphicon-plus"> new category</a>
 </div>
 {% endblock 'body' %}

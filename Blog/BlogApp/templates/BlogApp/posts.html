@@ -58,8 +58,8 @@
                             <a class="btn btn-danger" href="?page={{ posts.previous_page_number }}">previous</a>
                         {% endif %}
 
-                        <span class="current">
-                            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+                        <span id="page" class="current">
+                            Page {{ posts.number }} of {{ posts.paginator.num_pages }}
                         </span>
 
                         {% if posts.has_next %}

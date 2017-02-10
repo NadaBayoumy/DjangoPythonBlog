@@ -38,7 +38,7 @@ from .forms import RegistrationForm
 #category 
 def all_category(request):
     all_category = Category.objects.all()
-    context = {'all_category' : all_category}
+    context = {'all_category' : all_category, 'count': Counter()}
     return render(request, 'BlogApp/list_category.html', context)
 
 
@@ -83,7 +83,7 @@ def delete_category(request, c_id):
 #forbidden words
 def all_forbidden_words(request):
     all_forbidden_words = ForbiddenWords.objects.all()
-    context = {'all_forbidden_words' : all_forbidden_words}
+    context = {'all_forbidden_words' : all_forbidden_words, 'count': Counter()}
     return render(request, 'BlogApp/list_forbidden_words.html', context)
 
 
@@ -129,7 +129,7 @@ def check_forbidden_words_in_comment(request, comment_txt):
 
 def all_post(request):
     all_post = Post.objects.all()
-    context = {'all_post' : all_post}
+    context = {'all_post' : all_post, 'count': Counter()}
     return render(request, 'BlogApp/list_post.html', context)
 
 def new_post(request):
@@ -409,6 +409,7 @@ def login_admin(request):
         return render(request, 'BlogApp/login_admin.html', {'is_super': is_super})
     else:
         return HttpResponseRedirect('/')
+
 class Counter:
     count = 0;
     def increment(self):

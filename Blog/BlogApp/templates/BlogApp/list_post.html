@@ -8,22 +8,24 @@ Users Management Panel
 
 
 <div class="container">
+
+<a href="/new_post" class="pull-right"><i class="glyphicon glyphicon-plus"></i></a>
 <table class="table">
 
-
-<th>post title</th>
-<th>post Pic url</th>
-<th>post content</th>
-<th>user id</th>
-<th>post date</th>
-<th>post category</th>
+<th>#</th>
+<th>Title</th>
+<th>Pic URL</th>
+<th>Content</th>
+<th>Username</th>
+<th>Date</th>
+<th>Category</th>
 <th colspan='4'>actions</th>
 
 
 
 {%   for post in all_post %}
 <tr>
-
+<td>{{count.increment}}</td>
 <td> {{ post.postTitle }} </td>
 <td> {{ post.postPic }} </td>
 <td> {{ post.postContent }} </td>
@@ -40,9 +42,6 @@ Users Management Panel
 
 
 </table>
-
-
-<a href="/new_post" class="glyphicon glyphicon-plus"> new post </a> 
 
 
 {% endblock 'body' %}

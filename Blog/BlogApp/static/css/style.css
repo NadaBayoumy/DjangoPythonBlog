@@ -45,12 +45,6 @@ font-size: 20px;
 .sidebar{
    top:-20;
 
-    /*
-    width:25%;
-    max-height:100% !important;
-     */
-
-
 }
 
 .postimage
@@ -69,7 +63,7 @@ font-size: 20px;
 .nav>li>a {
 
     color: #fff;
-    }
+}
 
 
 .sidenavig
@@ -84,19 +78,13 @@ font-size: 20px;
     z-index:-10;
 }
 
-.nopadding {
-    /* padding: 0 !important;
-    margin: 0 !important; */
 
-
-
-
-/*table {
-    background: darkgrey;
-    border-radius: 10px;
-
-}*/
-
-.fa, .glyphicon {
+.fa, .glyphicon, #page {
     color: white;
+}
+
+i {
+   font-size:60px !important;
+   padding-bottom:50px;
+   padding-top:50px;
 }

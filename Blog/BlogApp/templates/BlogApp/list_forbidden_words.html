@@ -8,14 +8,16 @@ Users Management Panel
 
 
 <div class="container">
+    <a href="/new_forbidden_word" class="pull-right"><i class="glyphicon glyphicon-plus"></i></a>
+
 <table class="table">
 
 
-<th>name</th><th colspan='4'>actions</th>
+<th>#</th><th>Word</th><th>Delete</th>
 
 {%   for word in all_forbidden_words %}
 <tr>
-
+<td>{{count.increment}}</td>
 <td> {{ word.forbiddenWord }} </td>
 <td> <a href="/{{word.id}}/delete_forbidden_word" class="glyphicon glyphicon-remove">  </a>  </td>
 </tr>
@@ -26,7 +28,5 @@ Users Management Panel
 </table>
 
 
-
-<a href="/new_forbidden_word" class="glyphicon glyphicon-plus"> new forbidden word</a>
 
 {% endblock 'body' %}
