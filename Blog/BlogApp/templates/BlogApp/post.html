@@ -1,5 +1,8 @@
+{% extends 'BlogApp/base.html' %}
+
 {% load app_filters %}
 {% load staticfiles %}
+{% load bootstrap %}
 
 <html>
     <head>
@@ -8,52 +11,120 @@
         <link rel="stylesheet" type="text/css" href="{% static '/css/bootstrap-theme.min.css' %}" />
     </head>
     <body>
-        <h1>{{post.postTitle}}</h1>
-        <h3>{{post.userID.first_name}} {{post.userID.last_name}}</h3>
-        <h5>{{post.postDate}}</h5>
-        <p>
-            {{post.postContent}}
-        </p>
-        <br />
-        {% if user.is_authenticated %}
-            <form method="POST" action="comment">{% csrf_token %}
-                {{comment_form.as_p}}
-                <input type="submit" value="reply" />
-            </form>
-        {% endif %}
-        <div class="comment-section">
-            {% for comment in comments.0 %}
-                <div class = "comment">
-                    <h3>
-                        {{comment.userID.first_name}} {{comment.userID.last_name}} : {{comment.replyDate}}
-                    </h3>
-                    <p>
-                        {{comment.replyContent}}
-                    </p>
+        {% block 'body' %}
+        <div class="container-fluid no-padding">
+            <div class="row">
+                <div class="col-md-12">
+                    <figure>
+                        <img class="img-responsive thumbnail" src="{{base_url}}img/{{post.postPic}}" />
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron">
+            <div class="container">
+                <div class="row">
+                    <h1>{{post.postTitle}}</h1>
+                    <h3>By {{post.userID.first_name}} {{post.userID.last_name}}</h3>
+                    <h4>{{post.userID.email}}</h4>
+                    <h5>{{post.postDate}}</h5>
+                </div>
+            </div>
+
+        </div>
+        <div class="container">
+            <div class="row" style="margin-bottom: 10px;">
+                <h3 class="text-justify">{{post.postContent}}</h3>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#comment">Comment</button>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
                     {% if user.is_authenticated %}
-                        <form method="POST" action="{{comment.id}}/reply">{% csrf_token %}
-                            {{comment_form.as_p}}
-                            <input type="submit" value="reply" />
+                        <form method="POST" action="comment">{% csrf_token %}
+                            <div id = "comment" class="modal fade" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">Add a new comment</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{comment_form|bootstrap}}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            <input class="btn btn-success" type="submit" value="Comment" />
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
                         </form>
+
                     {% endif %}
-                    <div class = "reply">
-                        {% for reply in comments|lookup:comment.id %}
+                </div>
+            </div>
+            {% for comment in comments.0 %}
+                <div class="row">
+                    <div class="well col-md-7">
+                        <h3>
+                            {{comment.userID.first_name}}{{comment.userID.last_name}}
+                        </h3>
+                        <h5>
+                            {{comment.replyDate}}
+                        </h5>
+                        <p class="text-center">
+                            {{comment.replyContent}}
+                        </p>
+                        {% if user.is_authenticated %}
+                            <form method="POST" action="{{comment.id}}/reply">{% csrf_token %}
+                                <div id = "reply{{comment.pk}}" class="modal fade" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title">Add a new Reply</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{comment_form|bootstrap}}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                <input class="btn btn-success" type="submit" value="reply" />
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+                            </form>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#reply{{comment.pk}}">Reply</button>
+                        {% endif %}
+                    </div>
+
+                </div>
+                {% for reply in comments|lookup:comment.id %}
+                    <div class = "row">
+                        <div class="col-md-1">
+
+                        </div>
+                        <div class="col-md-6 well">
+
+                            <h3>
+                                {{reply.userID.first_name}} {{reply.userID.last_name}}
+                            </h3>
                             <h5>
-                                {{reply.userID.first_name}} {{reply.userID.last_name}} : {{reply.replyDate}}
+                                {{reply.replyDate}}
                             </h5>
-                            <p>
+                            <p class="text-center">
                                 {{reply.replyContent}}
                             </p>
-                        {% endfor %}
+                        </div>
                     </div>
-                </div>
+                {% endfor %}
+
+
+
 
             {% endfor %}
         </div>
-
-        <script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}">
-        </script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+        {% endblock 'body' %}
     </body>
 </html>

@@ -1,5 +1,7 @@
 <!doctype html>
+{% extends 'BlogApp/base.html' %}
 {% load staticfiles %}
+{% load bootstrap %}
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,30 +9,20 @@
         <link rel="stylesheet" type="text/css" href="{% static '/css/bootstrap-theme.min.css' %}" />
     </head>
     <body>
-        <form enctype="multipart/form-data" method='POST'>{% csrf_token %}
-            <!--{{form.as_p}}-->
-            {% for field in form %}
-
-                <fieldset class="form-group">
-                    <div class="col-md-12">
-                        <div class="input-group">
-                            <span class="input-group-addon">{{field.label}}</span>
-                            {{field}}
-                        </div>
-                    </div>
-                </fieldset>
-
-                </div>
-            {% endfor %}
-            </div>
-            <div class="container">
-                <div class="row">
-
-                    <input class="btn btn-success" type='submit' value='save' />
+        {% block 'body' %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <form enctype="multipart/form-data" method='POST'>{% csrf_token %}
+                        {{form|bootstrap}}
+                        <input class="btn btn-success" type='submit' value='save' />
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
+
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        {% endblock 'body' %}
     </body>
 </html>

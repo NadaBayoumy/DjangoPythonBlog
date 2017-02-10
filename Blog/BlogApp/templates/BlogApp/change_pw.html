@@ -5,11 +5,16 @@ Change Password
 {% endblock 'title' %}
 
 {% block 'body' %}
-<form method="POST"> {% csrf_token %}
-    {{form.as_p}}
+<div class="container">
+    <form method="POST" class="form-horizontal"> {% csrf_token %}
+    {{form|bootstrap_horizontal }}
+    <div class="form-group">
+    
     <button type="submit">Save</button>
+    </div>
 
 </form>
+</div>
 <button type="button" onClick="javascript:location.href='/users/';" />Cancel</button>
 {% if done %}
 <p>Password has been changed successful!</p>

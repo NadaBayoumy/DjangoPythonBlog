@@ -1,5 +1,18 @@
-<form method = 'POST'> {% csrf_token %}
-{{ post_form.as_p }}
+{% extends 'BlogApp/base.html' %}
+{% load bootstrap %}
 
-<button type="submit">Save</button>
-</form>
+{% block 'title' %}
+Post
+{% endblock 'title' %}
+
+{% block 'body' %}
+
+<div class="container">
+    <form method="POST" class="form-horizontal"> {% csrf_token %}
+    {{ post_form|bootstrap_horizontal }}
+        <div class="form-group">  
+            <button type="submit">Save</button>
+        </div>
+    </form>
+</div>
+{% endblock 'body' %}
