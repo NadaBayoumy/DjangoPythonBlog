@@ -16,8 +16,14 @@
     {% block 'head' %}{% endblock 'head' %}
 </head>
 <body>
-{% include 'BlogApp/header.html' %}
-{% block 'body' %}
+
+<div class="overlay">
+</div>
+<div class="onoverlay">
+    {% include 'BlogApp/header.html' %}
+    {% block 'body' %}
 {% endblock 'body' %}
+
+</div>
 </body>
 </html>

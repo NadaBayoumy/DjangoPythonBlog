@@ -1,7 +1,26 @@
-/*.header_jpg {
-    background-image: url("../img/header.jpg");
-    background-size: cover;
-    height: 600px;
-    padding-top:100px;
-    background-position: left bottom;
-}*/
+html,body {
+    height: 100%;
+    background-image: url('../img/bkg.png');
+
+}
+
+label, td, th{
+color:white;
+font-size: 20px;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.onoverlay {
+    position: relative;
+}
+

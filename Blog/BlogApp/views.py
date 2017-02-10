@@ -409,13 +409,18 @@ def login_admin(request):
         return render(request, 'BlogApp/login_admin.html', {'is_super': is_super})
     else:
         return HttpResponseRedirect('/')
+class Counter:
+    count = 0;
+    def increment(self):
+        self.count+=1
+        return str(self.count)
 
 def users_list(request):
     """ Lists the users for admin for the CRUD operations. With 2 options,
     block/unblock and promote/un-promote to/from admin"""
     if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
         users = User.objects.all()
-        context = {'users': users}
+        context = {'users': users, 'count': Counter()}
         return render(request, 'BlogApp/users_list.html', context)
     else:
         return HttpResponseRedirect('/')
@@ -425,8 +430,9 @@ def block_user(request, user_id):
     """ Block/unblock user """
     if request.user.is_superuser:   # Checks if admin else redirect the user to home page.
         user = User.objects.get(pk=user_id)
-        user.is_active = not user.is_active
-        user.save()
+        if not user.is_superuser:
+            user.is_active = not user.is_active
+            user.save()
         return HttpResponseRedirect('/users')
     else:
         return HttpResponseRedirect('/')

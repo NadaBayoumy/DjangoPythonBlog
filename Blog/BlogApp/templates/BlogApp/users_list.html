@@ -11,19 +11,21 @@ Users Management Panel
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <script>
     $(document).ready(function() {
-        $(".lockedrow").parents('tr').css( "border", "2px solid red" );
-        $(".lockedrow").parents('tr td a').css( "color", "red" );
+        $(".lockedrow").parents('tr').addClass( "danger" );
     });
 </script>
 <!-- end nada link -->
 
 <div class="container">
 
-<table class="table">
-    <th>Username</th><th>First Name</th><th>Promote/Un-Promote</th><th>Block/Unblock</th><th></th>
+<a href="new/" class="pull-right"><i style="font-size:60px; padding-bottom:50px;" class="fa fa-user-plus"></i></a>
+
+<table class="table table-hover">
+    <th>#</th><th>Username</th><th>First Name</th><th>Promote/Un-Promote</th><th>Block/Unblock</th><th>Modify</th>
     {% for user in users %}
     
      <tr>
+        <td>{{count.increment}}</td>
         <td>{{user.username}}</td>
         <td>{{user.first_name}}</td>
         {% if user.is_superuser is True %}
@@ -33,7 +35,7 @@ Users Management Panel
         </td>
         <td>
             <!-- <button disabled >Block</button> -->
-            <a disabled  class="lockedrow fa fa-lock"> </a>
+            <a href="/block/{{user.pk}}"   class="lockedrow fa fa-lock"> </a>
         </td>
         {% else %}
         <td>
@@ -54,42 +56,12 @@ Users Management Panel
             </td>
             {% endif %}
         {% endif %}
+
         <td><a href="edit/{{user.pk}}" class="glyphicon glyphicon-edit"></a></td>
 
     </tr>
-    
-    
-    <!-- <tr>
-        <td>{{user.username}}</td>
-        <td>{{user.first_name}}</td>
-        {% if user.is_superuser is True %}
-        <td>
-            <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Un-Promote</button>
-            <a href="/promote/{{user.pk}}" > Un-Promote </a>
-        </td>
-        <td>
-            <button disabled >Block</button>
-        </td>
-        {% else %}
-        <td>
-            <button type="button" onClick="javascript:location.href='/promote/{{user.pk}}';" />Promote</button>
-        </td>
-            {% if user.is_active is True %}
-            <td>
-                <button  type="button" onClick="javascript:location.href='/block/{{user.pk}}';"   />Block</button>
-            </td>
-            {% else %}
-            <td>
-                <button type="button" onClick="javascript:location.href='/block/{{user.pk}}';" />Unblock</button>
-            </td>
-            {% endif %}
-        {% endif %}
-        <td><a class="glyphicon glyphicon-edit" href="edit/{{user.pk}}"></a></td>
 
-    </tr> -->
     {% endfor %}
 </table>
-<!-- <button type="button" onClick="javascript:location.href='new/';" class="glyphicon glyphicon-plus" />Add User</button> -->
-<a href="new/" class="glyphicon glyphicon-plus"> new user </a>
 </div>
 {% endblock 'body' %}
