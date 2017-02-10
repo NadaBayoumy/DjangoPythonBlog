@@ -426,7 +426,7 @@ def block_user(request, user_id):
         user.save()
         return HttpResponseRedirect('/users')
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 
 def promote_user(request, user_id):
@@ -437,7 +437,7 @@ def promote_user(request, user_id):
         user.save()
         return HttpResponseRedirect('/users')
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 
 def change_pw(request, user_id):
@@ -458,7 +458,7 @@ def change_pw(request, user_id):
                 return render(request, 'BlogApp/change_pw.html', {'form': form, 'done': done})
         return render(request, 'BlogApp/change_pw.html', {'form': form, 'done': done})
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 """ Admin CRUD OPERATIONS """
 
@@ -474,7 +474,7 @@ def edit_user(request, user_id):
                 return HttpResponseRedirect('/users/')
         return render(request, 'BlogApp/edit_user.html', {'form': form, 'user': user})
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 
 def create_user(request):
@@ -487,7 +487,7 @@ def create_user(request):
                 return HttpResponseRedirect('/users/')
         return render(request, 'BlogApp/new_user.html', {'form': form})
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 
 def delete_user(request, user_id):
@@ -496,7 +496,7 @@ def delete_user(request, user_id):
         user.delete()
         return HttpResponseRedirect('/users/')
     else:
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect('/')
 
 
 ###################################################################################
