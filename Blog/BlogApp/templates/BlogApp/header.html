@@ -9,20 +9,23 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-      <a class="navbar-brand" href="#">Bolg</a>
+      <a class="navbar-brand" href="/">Bolg</a>
       </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav ul1">
-    <li role="presentation" class="active"><a href="/login/">Log In</a></li>
+    <ul class="nav navbar-nav">
+        <li role="presentation" ><a href="/">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+    <li role="presentation" ><a href="/login/">Log In</a></li>
     <li role="presentation"><a href="/registration">Register</a></li>
     </ul>
     </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
 
-{% elif not request.user.is_super %}
+{% elif not request.user.is_superuser %}
 <nav class="navbar navbar-inverse">
     <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -33,13 +36,16 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-      <a class="navbar-brand" href="#">Blog</a>
+      <a class="navbar-brand" href="/">Blog</a>
       </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav ul1">
-    <li role="presentation" class="active"><a href="/logout/">Log Out</a></li>
+    <ul class="nav navbar-nav">
+        <li role="presentation" ><a href="/">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+    <li role="presentation" ><a href="/logout/">Log Out</a></li>
     
     </ul>
     </div><!-- /.navbar-collapse -->
@@ -57,14 +63,17 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-      <a class="navbar-brand" href="#">Blog</a>
+      <a class="navbar-brand" href="/">Blog</a>
       </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav ul1">
-    <li role="presentation" class="active"><a href="/logout/">Log Out</a></li>
-    <li role="presentation"><a href="/mange/">Mange Blog</a></li>   
+    <ul class="nav navbar-nav">
+    <li role="presentation"><a href="/">Home</a></li>
+    <li role="presentation"><a href="/manage">Mange Blog</a></li>   
+    </ul>
+    <ul class="nav navbar-nav navbar-right ">
+        <li role="presentation" ><a href="/logout/">Log Out</a></li>   
     </ul>
     </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
