@@ -487,6 +487,14 @@ def create_user(request):
             form = CreateUserForm(request.POST)
             if form.is_valid():
                 form.save()
+                name = form.data['username']
+                obj = User.objects.get(username=name)
+                #             uid=obj.id
+                #             user = User.objects.get(id=1)
+                group = Group.objects.get(id=1)
+                obj.groups.add(group)
+                #             group = auth_user_groups.objects.create(user_id=uid, group_id=1)
+                group.save()
                 return HttpResponseRedirect('/users/')
         return render(request, 'BlogApp/new_user.html', {'form': form})
     else:
