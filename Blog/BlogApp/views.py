@@ -201,6 +201,7 @@ def show_categories(request):
 
 def show_posts(request, c_id):
     # returns all related posted to a certain category ordered by its date
+    category = get_object_or_404(Category, pk = c_id)
     posts = Post.objects.filter(postCategory_id = c_id).order_by('postDate')
     #here pagination starts
     paginator = Paginator(posts, 5)
@@ -225,7 +226,7 @@ def show_posts(request, c_id):
 """
 
 def post_display(request, c_id, p_id):
-    post = Post.objects.get(pk = p_id) # returns an object contains all post info
+    post = get_object_or_404(Post, pk = p_id) # returns an object contains all post info
     comments = Reply.objects.filter(postID_id = p_id) # returns an queryset contains all the comments/replies to this post
 
     # comment_dict key is the original comment id
