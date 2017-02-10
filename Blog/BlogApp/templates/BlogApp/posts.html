@@ -1,17 +1,14 @@
 {% extends 'BlogApp/base.html' %}
 {% load app_filters %}
-<html>
-    <head>
-        <title>
+{% block 'body' %}
+<div class="container">
 
-        </title>
-    </head>
-    <body>
-        {% block 'body' %}
-        <div class="container">
-            <div class="row">
-                <table class="table table-hover">
-                    <tr class="success">
+{% if user.is_authenticated %}
+    <!-- <button class="btn btn-primary pull-right" onclick="location.href='new_post'"><span class="glyphicon glyphicon-plus" style="color"></span> add new</button> -->
+    <a href="new_post/" class="pull-right"><i class="fa fa-plus"></i></a>
+{% endif %}
+                <table class="table">
+                    <tr>
                         <th>
                             Post Picture
                         </th>
@@ -46,11 +43,7 @@
                     {% endfor %}
                 </table>
 
-            </div>
-            <div class="row">
-                <div class="col-md-5">
-
-                </div>
+      
                 <!-- pagination starts here  -->
                 <div class="pagination">
                     <span class="step-links">
@@ -69,15 +62,7 @@
                 </div>
                 <!-- pagination ends here -->
 
-            </div>
-            {% if user.is_authenticated %}
-                <button class="btn btn-primary pull-right" onclick="location.href='new_post'"><span class="glyphicon glyphicon-plus" style="color"></span> add new</button>
-            {% endif %}
-            <script src="{{base_url}}css/bootstrap/js/bootstrap.min.js">
-            </script>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+           
         </div>
-        {% endblock %}
-    </body>
-</html>
+   
+{% endblock 'body' %}
