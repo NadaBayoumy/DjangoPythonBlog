@@ -7,7 +7,7 @@ from django import forms
 #end nada
 
 #alem
-from models import Post, Reply 
+from .models import Post, Reply 
 #end alem
 
 #hossam
