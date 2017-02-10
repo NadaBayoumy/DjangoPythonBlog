@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'BlogApp',
+    'bootstrapform',
 ]
 
 MIDDLEWARE = [
@@ -88,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'blogdb',
         'USER': 'root',
-        'PASSWORD': 'ROOT',
+        'PASSWORD': '',
     }
 }
 
