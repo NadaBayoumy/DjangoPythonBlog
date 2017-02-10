@@ -1,4 +1,110 @@
+{% extends 'BlogApp/base.html' %}
 {% load app_filters %}
+{% block 'body' %}
+
+
+<div class="row ">
+
+
+<div class="sidenavig col-md-3 nopadding"></div>
+
+
+<div class="col-md-3 nopadding">
+
+<ul class="nav navbar-inverse nav-stacked nopadding">
+
+{% for category in categories %}
+
+  <li role="presentation"> <a style="display:inline-block; vertical-align:top"  {% if not user.is_authenticated or subscribed|lookup:category.id == True %} href="{{category.id}}" {% else %} href="#" {% endif %}> {{category.categoryName}} </a>
+    {% if user.is_authenticated and subscribed|lookup:category.id == True %}
+  <a style="display:inline-block; vertical-align:top;float: right;"  href="{{category.id}}/unsubscribe" style="">Unsubscribe</a>
+   {% elif user.is_authenticated %}
+   <a style="display:inline-block; vertical-align:top;float: right;" and style="" href="{{category.id}}/subscribe">Subscribe</a>
+   </li>
+   {% endif %}
+   
+ {% endfor %}
+ 
+</ul>
+
+</div>
+
+<!-- <li role="presentation"> 
+<a href="#" style="display:inline-block; vertical-align:top"> 
+news 
+</a> <button style="display:inline-block; vertical-align:top;float:right;">subscibe</button>
+</li> -->
+
+ 
+
+<div class="col-md-9">
+        <!-- {% for category in categories %}
+            <a {% if not user.is_authenticated or subscribed|lookup:category.id == True %} href="{{category.id}}" {% else %} href="#" {% endif %}> {{category.categoryName}} </a>
+            {% if user.is_authenticated and subscribed|lookup:category.id == True %}
+                <a href="{{category.id}}/unsubscribe" style="margin-left: 30px;">Unsubscribe</a>
+            {% elif user.is_authenticated %}
+                <a and style="margin-left: 30px;" href="{{category.id}}/subscribe">Subscribe</a>
+            {% endif %}
+            <hr /><hr />
+        {% endfor %} -->
+        
+        <div class="row">
+        
+        {% for post in posts %}
+            <!-- <a href="{{post.postCategory.pk}}/{{post.id}}"><img class="post-pic" src="{{base_url}}img/{{post.postPic.name}}"  width="20" height="20" /></a>
+            <a href="{{post.postCategory.pk}}/{{post.id}}">{{post.postTitle}}</a>
+            <p>{{post.userID.first_name}} {{post.userID.last_name}} </p>
+             -->
+            
+            
+            
+              <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                 <img class="post-pic" src="{{base_url}}img/{{post.postPic.name}}"  class="postimage" />
+                  <div class="caption">
+                    <h3 class="text-center"><a href="{{post.postCategory.pk}}/{{post.id}}">{{post.postTitle}}</a></h3>
+                    <p>{{post.userID.first_name}} {{post.userID.last_name}} </p>
+                    <!-- <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p> -->
+                  </div>
+                </div>
+              
+            </div>
+            
+            
+        {% endfor %} 
+        
+        </div>
+        
+
+<div>
+
+</div>
+</div>
+
+{% endblock 'body' %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- old code just for back up nada did that -->
+<!-- {% load app_filters %}
 {% load staticfiles %}
 {% static "" as base_url %}
 <html>
@@ -21,4 +127,4 @@
             <p>{{post.userID.first_name}} {{post.userID.last_name}} </p>
         {% endfor %}
     <body>
-<html>
+<html> -->
