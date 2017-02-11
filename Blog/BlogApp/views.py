@@ -304,7 +304,27 @@ def subscribe_category(request, c_id):
     category = Category.objects.get(pk = c_id)
     #user = User.objects.get(pk = request.user.id)
     user = request.user
-    category.users.add(user)
+    category.users.add(user) 
+    
+    #Nada > app password in gmail : "puljwkqotinjhluc"
+    #send cogratulations subscription email      
+    connection = mail.get_connection()
+    #Manually open the connection
+    connection.open()
+    #Construct an email message that uses the connection
+    msgbodytext = "Hello - " + user.username + "- you have subscribed successfully in - " + category.categoryName +" -  welcome" 
+    email = mail.EmailMessage(
+        'Django Blog Application Welcome',
+        msgbodytext,
+        'nada.bayoumy1990@gmail.com',
+        [user.email],
+        connection=connection,
+    )
+    email.send() # Send the email
+    connection.close()
+    #end send congratulations subscribtion email
+    
+    
     return HttpResponseRedirect("/" + c_id)
 
 def unsubscribe_category(request, c_id):
